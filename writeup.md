@@ -147,7 +147,7 @@ Here are five German traffic signs that I found on the web:
 
 Here are the results of the prediction:
 
-| Image					| Prediction									| Result |
+| Image	label				| Prediction									| Result |
 |:---------------------:|:---------------------------------------------:|:------:|
 | General caution		| General caution   							| PASSED |
 | No entry				| No entry 										| PASSED |
@@ -160,7 +160,13 @@ This compares favorably to the accuracy on the test set accuracy of 0.95.
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
-The code for making predictions on my final model is located in the 13th cell of the Ipython notebook.
+The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+
+```python
+with tf.Session() as sess:
+        saver.restore(sess, tf.train.latest_checkpoint('.'))
+        predictions = sess.run(tf.argmax(logits, 1), feed_dict={x: test_images_n, keep_prob: 1.0})
+```
 
 For the first image, the model is relatively sure that this is a `General caution`(probability of 1.00), and the image does contain a `General caution`. The top five soft max probabilities were as follows.
 
