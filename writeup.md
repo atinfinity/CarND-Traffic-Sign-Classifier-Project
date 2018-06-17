@@ -155,7 +155,6 @@ Here are the results of the prediction:
 | Speed limit (30km/h)	| Speed limit (30km/h)							| PASSED |
 | Stop					| Stop											| PASSED |
 
-
 The model was able to correctly guess 5 of the 5 traffic signs, which gives an accuracy of 1.0.  
 This compares favorably to the accuracy on the test set accuracy of 0.95.
 
@@ -163,30 +162,30 @@ This compares favorably to the accuracy on the test set accuracy of 0.95.
 
 The code for making predictions on my final model is located in the 13th cell of the Ipython notebook.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.99), and the image does contain a stop sign. The top five soft max probabilities were
+For the first image, the model is relatively sure that this is a `General caution`(probability of 1.00), and the image does contain a `General caution`. The top five soft max probabilities were as follows.
 
 | Probability			| Prediction									| 
 |:---------------------:|:---------------------------------------------:| 
-| .99					| General caution								| 
-| .xx					| Traffic signals								|
-| .xx					| Bumpy road									|
-| .xx					| Road narrows on the right						|
-| .xx					| No vehicles      								|
+| 1.00000000e+00  | General caution								| 
+| 7.01177874e-12  | Traffic signals								|
+| 3.46768413e-25  | Bumpy road									|
+| 2.88710889e-25  | Road narrows on the right						|
+| 2.91583627e-29  | No vehicles      								|
 
-For the second image ... 
+For the second image, the model is relatively sure that this is a `No entry`(probability of 0.99), and the image does contain a `No entry`. The top five soft max probabilities were as follows.
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .99					| No entry										| 
-| .xx					| Keep right									|
-| .xx					| Stop											|
-| .xx					| Yield											|
-| .xx					| Vehicles over 3.5 metric tons prohibited     	|
+| 9.99989629e-01  | No entry										| 
+| 7.29284375e-06  | Keep right									|
+| 2.32902880e-06  | Stop											|
+| 6.80126675e-07  | Yield											|
+| 4.36696617e-08  | Vehicles over 3.5 metric tons prohibited |
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
-Here are feature map of the first hidden layer:
+Here are the visualization of features for one of the German traffic signs(Image 1) :
 
 ![Feature Map][feature_map]
 
