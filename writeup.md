@@ -19,6 +19,7 @@ The goals / steps of this project are the following:
 
 [visualize_dataset]: ./images/visualize_dataset.png "Visualization"
 [feature_map]: ./images/feature_map.png "Feature Map"
+[curve_of_accuracy]: ./images/curve.png "Curve of Accuracy"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -55,19 +56,74 @@ Here is an exploratory visualization of the data set.
 
 #### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-As a first step, I decided to convert the images to grayscale because ...
+I used the following techniques as preprocess.
 
-Here is an example of a traffic sign image before and after grayscaling.
+- Grayscale
+  - I think that shape and edge are more important than colors to recognize traffic sign
+- Equalization of histogram
+  - This process is effective to reduce the influence of contrast
+- Normalization
+  - This process is effective to reduce the influence of brightness
 
-**[TODO]**
+My preprocess code is as follows.
 
-As a last step, I normalized the image data because ...
+```python
+# convert to grayscale
+def grayscale(image):
+    return cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-**[TODO]**
+def equalize(image):
+    return cv2.equalizeHist(image)
 
-I decided to generate additional data because ... 
+def normalize(image):
+    min, max = np.min(image), np.max(image)
+    return (image - min) / (max - min) * 2 - 1
 
-To add more data to the the data set, I used the following techniques because ... 
+def preprocess_image(image):
+    return np.expand_dims(normalize(equalize(grayscale(image))), axis=2)
+```
+
+And, I decided to generate additional data because this process is effective to increase variations of data. As a result, generalization ability can be improved.
+
+To add more data to the the data set, I used the following techniques. 
+
+- rotation
+  - This process is effective to increase variations of angle.  
+- translation
+  - This process is effective to increase variations of translation.  
+- Change of brighness
+  - This process is effective to increase variations of light environment.
+
+My data augumentation code is as follows.
+
+```python
+def rotate(image, angle=15):
+    angle = np.random.randint(-angle, angle)
+    M = cv2.getRotationMatrix2D((16, 16), angle, 1)
+    return cv2.warpAffine(src=image, M=M, dsize=(32, 32))
+
+def translate(image, pixels=2):
+    tx = np.random.choice(range(-pixels, pixels))
+    ty = np.random.choice(range(-pixels, pixels))
+    M = np.float32([[1, 0, tx], [0, 1, ty]])
+    return cv2.warpAffine(src=image, M=M, dsize=(32, 32))
+
+def random_bright(image):
+    eff = 0.5 + np.random.random()
+    return image * eff
+
+def generate(images, count):
+    generated = []
+    while True:
+        for image in images:
+            if len(generated) == count:
+                return generated
+            image = random_bright(image)
+            image = rotate(image)
+            image = translate(image)
+            image = normalize(image)
+            generated.append(np.expand_dims(image, axis=2))
+```
 
 Here is an example of an original image and an augmented image:
 
@@ -119,16 +175,18 @@ My final model results were:
 If an iterative approach was chosen:
 
 * What was the first architecture that was tried and why was it chosen?
+  * At first, I tried LeNet-5[1]. Because, this architecture works really fast and really well, allowing us to train our model in a short period of time. 
 * What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
+  * accuracy of the validation did not improve(=over-fitting)
 * Which parameters were tuned? How were they adjusted and why?
+  * I increased batch size to speed up learning
+  * I increased epochs to improve accuracy
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+  * I think that convolution layer can extract features(edge, change of contrast, etc...) to recognize traffic sign.
+  * I used dropout to avoid over-fitting.
+  * I observed the curve of accuracy(training, validation, test) to confirm the progress of learning.
 
-If a well known architecture was chosen:
-
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
+![curve_of_accuracy][curve_of_accuracy]
 
 ### Test a Model on New Images
 
@@ -198,4 +256,5 @@ Here are the visualization of features for one of the German traffic signs(Image
 I think that the first hidden layer of the trained neural network gets activated by edges on the image or changes in the contrast.
 
 ### Reference
-- [Road signs in Germany](https://en.wikipedia.org/wiki/Road_signs_in_Germany)
+- [1] [Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. Gradient-based learning applied to document recognition. Proceedings of the IEEE, november 1998.](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
+- [2] [Road signs in Germany](https://en.wikipedia.org/wiki/Road_signs_in_Germany)
