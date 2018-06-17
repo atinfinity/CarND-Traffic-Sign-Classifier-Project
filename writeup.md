@@ -87,9 +87,9 @@ And, I decided to generate additional data because this process is effective to 
 
 To add more data to the the data set, I used the following techniques. 
 
-- rotation
+- Rotation
   - This process is effective to increase variations of angle.  
-- translation
+- Translation
   - This process is effective to increase variations of translation.  
 - Change of brighness
   - This process is effective to increase variations of light environment.
