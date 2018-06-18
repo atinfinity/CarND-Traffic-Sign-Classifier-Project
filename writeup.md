@@ -83,20 +83,30 @@ def preprocess_image(image):
     return np.expand_dims(normalize(equalize(grayscale(image))), axis=2)
 ```
 
+Here is an example of an original image and an preprocessed image:
+
+| ![](images/preprocess/01_image.png) | ![](images/preprocess/02_gray.png) | ![](images/preprocess/03_equalized.png) | ![](images/preprocess/04_normalized.png) |
+|:------:|:------:|:------:|:------:|
+| Original Image | Grayscale | Histogram <br>Equalization | Normalization |
+
 And, I decided to generate additional data because this process is effective to increase variations of data. As a result, generalization ability can be improved.
 
 To add more data to the the data set, I used the following techniques. 
 
+- Change of brighness
+  - This process is effective to increase variations of light environment.
 - Rotation
   - This process is effective to increase variations of angle.  
 - Translation
-  - This process is effective to increase variations of translation.  
-- Change of brighness
-  - This process is effective to increase variations of light environment.
+  - This process is effective to increase variations of translation. 
 
 My data augumentation code is as follows.
 
 ```python
+def random_bright(image):
+    eff = 0.5 + np.random.random()
+    return image * eff
+
 def rotate(image, angle=15):
     angle = np.random.randint(-angle, angle)
     M = cv2.getRotationMatrix2D((16, 16), angle, 1)
@@ -107,10 +117,6 @@ def translate(image, pixels=2):
     ty = np.random.choice(range(-pixels, pixels))
     M = np.float32([[1, 0, tx], [0, 1, ty]])
     return cv2.warpAffine(src=image, M=M, dsize=(32, 32))
-
-def random_bright(image):
-    eff = 0.5 + np.random.random()
-    return image * eff
 
 def generate(images, count):
     generated = []
@@ -127,11 +133,9 @@ def generate(images, count):
 
 Here is an example of an original image and an augmented image:
 
-**[TODO]**
-
-The difference between the original data set and the augmented data set is the following ... 
-
-**[TODO]**
+| ![](images/data_augumentation/01_image.png) | ![](images/data_augumentation/02_brighted.png) | ![](images/data_augumentation/03_rotated.png) | ![](images/data_augumentation/04_translated.png) |
+|:------:|:------:|:------:|:------:|
+| Original Image | Change of <br>brighness | Rotation | Translation |
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
